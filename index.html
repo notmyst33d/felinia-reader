@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Felinia Reader</title>
+        <style>
+            html, body {
+                font-family: sans-serif;
+                background-color: #000000;
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+            }
+
+            #page {
+                display: block;
+                min-width: 100%;
+                max-width: 50%;
+                width: 100%;
+                margin: auto;
+                padding-bottom: 164px;
+            }
+
+            .view {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+            }
+
+            .shade {
+                background-color: #0000007f;
+            }
+
+            .window {
+                position: absolute;
+                width: fit-content;
+                background-color: #ffffff;
+                border-radius: 16px;
+                padding: 16px;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .navigation-window {
+                position: absolute;
+                width: fit-content;
+                background-color: #0000007f;
+                border-radius: 16px;
+                padding: 16px;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            button {
+                font-weight: 700;
+                color: #ffffff;
+                background-color: #f62a2a;
+                border-style: none;
+                border-radius: 8px;
+                padding: 8px;
+                cursor: pointer;
+            }
+
+            .navigation-button {
+                width: 64px;
+                height: 64px;
+                font-size: 32px;
+                font-weight: 700;
+                background-color: #0000007f;
+            }
+
+            .align-right {
+                display: block;
+                margin-left: auto;
+            }
+
+            .align-center {
+                display: block;
+                margin: auto;
+            }
+
+            .divider {
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            #progress {
+                color: #ffffff;
+                width: fit-content;
+                font-weight: 700;
+                padding-top: 8px;
+            }
+
+            .rainy {
+                height: 164px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="welcome" class="view shade hidden">
+            <div class="window">
+                Hello! Welcome to Felinia Reader!<br>
+                Here you can read Felinia in it's entirety.<br>
+                I hope you enjoy reading it.<br>
+                <img class="align-center divider" src="divider.png">
+                <button id="welcome-button" class="align-right">
+                    Got it
+                </button>
+            </div>
+        </div>
+        <div id="sad" class="view shade hidden">
+            <div class="window">
+                Thanks for reading Felinia!<br>
+                Unfortunately this marks the end for this comic.<br><br>
+                However, you can visit the <a href="https://www.reddit.com/r/felinia/">Reddit</a> for community-made arts and much more!<br><br>
+                Here, have Rainy for some inspiration:
+                <img class="align-center rainy" src="rainy.png">
+                <img class="align-center divider" src="divider.png">
+                <button id="sad-button" class="align-right">
+                    Okay :(
+                </button>
+            </div>
+        </div>
+        <div id="navigation" class="view hidden">
+            <div class="navigation-window">
+                <button id="previous-button" class="navigation-button">&lt</button>
+                <button id="next-button" class="navigation-button">&gt</button>
+                <br>
+                <span id="progress" class="align-center">1/151</span>
+            </div>
+        </div>
+        <img id="page" src="https://feliniacomic.com/wp-content/uploads/2017/08/felinia-cover-v2.png">
+        <script>
+            // Hosted pages
+            let pages = [
+                "https://feliniacomic.com/wp-content/uploads/2017/08/felinia-cover-v2.png",
+                "https://feliniacomic.com/wp-content/uploads/2018/07/prologue-page-1.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-01.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-02.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-03.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-04.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-05.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-06.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-07.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-08.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-9.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-10.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-11.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-12-2.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-13.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-14.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-15.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-16.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/CHAPATER-2.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-17.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-18.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-19.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-20.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-21.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-22.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-23.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-24.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-25.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-26.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-27.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-28.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-29.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-30.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-31.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/chapter3.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-32.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/paGE-33.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-34.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-35.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-36.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-37.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-38.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-39.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-40.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-41.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-42.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-43.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-44.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-45.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-46-e.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-47.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-48.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/CHAPATER-FOUR.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-49.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-50.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-51.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-52.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-53.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-54.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-55.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-56.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-57.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-58.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-59.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-60.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-61.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-62.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-63.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-64.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-65.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-66.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-67.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-68.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-69.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-70.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/chapter5.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-71.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-72.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-73.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-74.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-75.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-76.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-77.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-78.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-79.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-80.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-81.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-82.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-83.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-84.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-85.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-86.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-87.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAge-88.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-89.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-90.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-91.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-92.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-93.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-94.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-95.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-96.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-97.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/chapter-6.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-98.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-99.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-100.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-101.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-102.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-103.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-104.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-105.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-106.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-107.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-108.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-109.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-110.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-111.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-112.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-113.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-114.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-115.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-116.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-117.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-118.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-119.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-120.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-121.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-122.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-123.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/chapter-7v2.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-124i.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/PAGE-125.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-126.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-127.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-128.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-129.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-130.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-131.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-132i.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-133.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-134.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-135.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-136.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-137.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-138.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-139.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-140.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-141.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-142.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-143.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/08/page-144.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/07/felinia__page_145_by_rainy_bleu-dbb0417.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/07/felinia__page_146_by_rainy_bleu-dbbxw8m.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/07/felinia__page_147_by_rainy_bleu-dbcpz1d.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/07/felinia__page_148_by_rainy_bleu-dbdswxr.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/07/felinia__page_149_by_rainy_bleu-dbf6cbv.png",
+                "https://feliniacomic.com/wp-content/uploads/2017/07/felinia__page_150_by_rainy_bleu.png",
+            ];
+
+            function updateLastPage() {
+                page.src = pages[lastPage];
+                progress.innerText = lastPage + 1;
+                progress.innerText += "/";
+                progress.innerText += pages.length;
+                localStorage.setItem("lastPage", lastPage);
+                window.scrollTo(0, 0);
+            }
+
+            function openView(name) {
+                let views = document.getElementsByClassName("view");
+                for (let i = 0; i < views.length; i++) {
+                    if (views[i].id == name) {
+                       views[i].classList.remove("hidden");
+                    } else if (!views[i].classList.contains("hidden")) {
+                       views[i].classList.add("hidden");
+                    }
+                }
+            }
+
+            const page = document.getElementById("page");
+            const welcome = document.getElementById("welcome");
+            const welcomeButton = document.getElementById("welcome-button");
+            const sadButton = document.getElementById("sad-button");
+            const previousButton = document.getElementById("previous-button");
+            const nextButton = document.getElementById("next-button");
+            const progress = document.getElementById("progress");
+
+            let lastPage = localStorage.getItem("lastPage");
+            if (lastPage === null) {
+                lastPage = 0;
+                openView("welcome");
+            } else {
+                lastPage = parseInt(lastPage);
+                openView("navigation");
+            }
+
+            welcomeButton.addEventListener("click", function () {
+                openView("navigation");
+            });
+
+            sadButton.addEventListener("click", function () {
+                openView("navigation");
+            });
+
+            previousButton.addEventListener("click", function () {
+                if (lastPage - 1 < 0) {
+                    return;
+                }
+
+                lastPage -= 1;
+                updateLastPage();
+            });
+
+            nextButton.addEventListener("click", function () {
+                if (lastPage + 1 >= pages.length) {
+                    openView("sad");
+                    return;
+                }
+
+                lastPage += 1;
+                updateLastPage();
+            });
+
+            updateLastPage();
+        </script>
+    </body>
+</html>
